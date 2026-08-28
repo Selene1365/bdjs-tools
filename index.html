@@ -3,66 +3,434 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>正在跳转...</title>
+    <title>保单检视工具下载中心</title>
     <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
         body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', sans-serif;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif;
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             min-height: 100vh;
+            padding: 40px 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 50px;
+        }
+
+        .header h1 {
+            color: white;
+            font-size: 42px;
+            font-weight: 700;
+            margin-bottom: 12px;
+            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+        }
+
+        .header p {
+            color: rgba(255, 255, 255, 0.9);
+            font-size: 18px;
+        }
+
+        .tools-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 30px;
+        }
+
+        .tool-card {
+            background: white;
+            border-radius: 20px;
+            padding: 35px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .tool-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 50px rgba(0, 0, 0, 0.25);
+        }
+
+        .tool-icon {
+            width: 70px;
+            height: 70px;
+            border-radius: 16px;
             display: flex;
             align-items: center;
             justify-content: center;
+            font-size: 32px;
+            margin-bottom: 20px;
+            float:left;
+            margin-right:20px;
         }
-        .container {
-            text-align: center;
-            color: white;
+
+        .tool-icon.pdf { background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); }
+        .tool-icon.html { background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%); }
+        .tool-icon.crm { background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%); }
+
+        .tool-card h2 {
+            font-size: 24px;
+            color: #1a202c;
+            margin-bottom: 10px;
         }
-        .spinner {
-            width: 60px;
-            height: 60px;
-            border: 4px solid rgba(255,255,255,0.3);
-            border-top-color: white;
-            border-radius: 50%;
-            animation: spin 1s linear infinite;
-            margin: 0 auto 20px;
+
+        .tool-card .description {
+            color: #718096;
+            font-size: 14px;
+            margin-bottom: 25px;
+            line-height: 1.6;
         }
-        @keyframes spin { to { transform: rotate(360deg); } }
-        h1 { font-size: 24px; margin-bottom: 10px; }
-        p { font-size: 14px; opacity: 0.8; }
-        .target-link {
-            margin-top: 20px;
-            display: inline-block;
-            padding: 12px 24px;
-            background: rgba(255,255,255,0.2);
-            border-radius: 8px;
-            color: white;
-            text-decoration: none;
+
+        .version-info {
+            background: #f7fafc;
+            border-radius: 12px;
+            padding: 15px;
+            margin-bottom: 20px;
+        }
+
+        .version-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 8px 0;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        .version-item:last-child {
+            border-bottom: none;
+        }
+
+        .version-label {
             font-size: 13px;
-            word-break: break-all;
+            color: #4a5568;
+            font-weight: 500;
         }
-        .target-link:hover { background: rgba(255,255,255,0.3); }
+
+        .version-value {
+            font-size: 13px;
+            color: #2d3748;
+        }
+
+        .download-buttons {
+            display: flex;
+            gap: 12px;
+        }
+
+        .download-btn {
+            flex: 1;
+            padding: 14px 20px;
+            border-radius: 12px;
+            border: none;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            transition: all 0.2s ease;
+            text-decoration: none;
+        }
+
+        .download-btn.mac {
+            background: #1a202c;
+            color: white;
+        }
+
+        .download-btn.mac:hover {
+            background: #2d3748;
+            transform: scale(1.02);
+        }
+
+        .download-btn.windows {
+            background: #0078d4;
+            color: white;
+        }
+
+        .download-btn.windows:hover {
+            background: #106ebe;
+            transform: scale(1.02);
+        }
+
+        .download-btn svg {
+            width: 20px;
+            height: 20px;
+        }
+
+        .footer {
+            text-align: center;
+            margin-top: 50px;
+            color: rgba(255, 255, 255, 0.8);
+            font-size: 14px;
+        }
+
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 32px;
+            }
+
+            .tools-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .tool-card {
+                padding: 25px;
+            }
+
+            .download-buttons {
+                flex-direction: column;
+            }
+
+            .bundle-buttons {
+                flex-direction: column;
+                align-items: center;
+            }
+        }
+
+        .bundle-section {
+            margin-top: 50px;
+            text-align: center;
+        }
+
+        .bundle-title {
+            color: white;
+            font-size: 24px;
+            font-weight: 700;
+            margin-bottom: 20px;
+            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+        }
+
+        .bundle-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+
+        .bundle-btn {
+            padding: 18px 40px;
+            border-radius: 16px;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            font-size: 18px;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            transition: all 0.2s ease;
+            text-decoration: none;
+            min-width: 200px;
+            justify-content: center;
+        }
+
+        .bundle-btn.mac {
+            background: rgba(26, 32, 44, 0.9);
+            color: white;
+        }
+
+        .bundle-btn.mac:hover {
+            background: rgba(45, 55, 72, 0.95);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+        }
+
+        .bundle-btn.windows {
+            background: rgba(0, 120, 212, 0.9);
+            color: white;
+        }
+
+        .bundle-btn.windows:hover {
+            background: rgba(16, 110, 190, 0.95);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+        }
+
+        .bundle-btn svg {
+            width: 24px;
+            height: 24px;
+        }
+
+        .bundle-hint {
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 13px;
+            margin-top: 12px;
+        }
+
+        /* Hide EdgeOne Makers demo watermark */
+        #edgeone-watermark,
+        .edgeone-watermark,
+        [id*="edgeone"][id*="watermark"],
+        [class*="edgeone"][class*="watermark"] {
+            display: none !important;
+            visibility: hidden !important;
+            opacity: 0 !important;
+            height: 0 !important;
+            width: 0 !important;
+            pointer-events: none !important;
+        }
     </style>
 </head>
 <body>
-    <div class="container">
-        <div class="spinner"></div>
-        <h1>正在跳转到下载页面...</h1>
-        <p>如果页面没有自动跳转，请点击下方链接</p>
-        <a id="targetLink" class="target-link" href="#">点击前往</a>
-    </div>
     <script>
-        // ==================== 修改这里的链接即可 ====================
-        const TARGET_URL = "https://6a1ca1896dcd479db81ecc9b04e49cfe.app.workbuddy.link";
-        // ==========================================================
-        
-        document.getElementById('targetLink').href = TARGET_URL;
-        document.getElementById('targetLink').textContent = TARGET_URL;
-        
-        // 3秒后自动跳转
-        setTimeout(() => {
-            window.location.href = TARGET_URL;
-        }, 1500);
+        (function() {
+            function hideEdgeOneWatermark() {
+                const selectors = [
+                    '#edgeone-watermark',
+                    '.edgeone-watermark',
+                    '[id*="edgeone"][id*="watermark"]',
+                    '[class*="edgeone"][class*="watermark"]'
+                ];
+                selectors.forEach(function(sel) {
+                    document.querySelectorAll(sel).forEach(function(el) {
+                        el.style.display = 'none';
+                        el.style.visibility = 'hidden';
+                        el.style.opacity = '0';
+                        el.style.height = '0';
+                        el.style.width = '0';
+                        el.style.pointerEvents = 'none';
+                        el.removeAttribute('id');
+                        el.removeAttribute('class');
+                    });
+                });
+            }
+            hideEdgeOneWatermark();
+            document.addEventListener('DOMContentLoaded', hideEdgeOneWatermark);
+            setInterval(hideEdgeOneWatermark, 500);
+        })();
     </script>
+    <div class="container">
+        <div class="header">
+            <h1>📦 保单检视工具下载中心</h1>
+            <p>选择您需要的工具，支持 macOS 和 Windows 平台</p>
+        </div>
+
+        <!-- 一键打包下载 -->
+        <div class="bundle-section" style="margin-top: 0; margin-bottom: 40px;">
+            <div class="tool-card" style="background: linear-gradient(135deg, #667eea 0%, #b7a7c7 100%); border: 2px solid rgba(255,255,255,0.25);">
+                <h2 style="color: white; text-align: center; margin-bottom: 8px;">一键打包下载</h2>
+                <p style="color: rgba(255,255,255,0.85); text-align: center; font-size: 15px; margin-bottom: 25px;">包含全部工具，一次下载即可使用所有功能</p>
+                <div class="bundle-buttons">
+                    <a href="https://pan.baidu.com/s/1hWI57VkTBZBMl_i6Xpq-fA?pwd=zpb6" class="bundle-btn mac" target="_blank">
+                        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.53c.87-1.44 2.43-2.36 4.12-2.39 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.81-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M13 3.5c.73-.83 1.94-1.46 2.94-1.5.13 1.17-.34 2.35-1.04 3.19-.69.85-1.83 1.51-2.95 1.42-.15-1.15.41-2.35 1.05-3.11z"/></svg>
+                        Mac 版打包下载
+                    </a>
+                    <a href="https://pan.baidu.com/s/1eddFv3372byvWAJ22YLEfg?pwd=fyb6" class="bundle-btn windows" target="_blank">
+                        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M3 12V6.75l6-1.32v6.48L3 12zm17-9v8.75l-10 .08V5.21L20 3zM3 13l6 .09v6.81l-6-1.15V13zm7 .18l10 .08V21l-10-1.76V13.18z"/></svg>
+                        Windows 版打包下载
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <div style="text-align: center; margin-bottom: 30px;">
+            <p style="color: rgba(255,255,255,0.6); font-size: 15px; font-weight: 500;">—— 或单独下载各工具 ——</p>
+        </div>
+
+        <div class="tools-grid">
+            <!-- PDF转EXCEL工具 -->
+            <div class="tool-card">
+                <div class="tool-icon pdf">📄</div>
+                <h2>PDF 转 EXCEL 工具</h2>
+                <p class="description">快速将 中保信PDF 提取并转换为 Excel 格式</p>
+                
+                <div class="version-info">
+                    <div class="version-item">
+                        <span class="version-label">当前版本</span>
+                        <span class="version-value">v1.2.4</span>
+                    </div>
+                    <div class="version-item">
+                        <span class="version-label">更新日期</span>
+                        <span class="version-value">2026-08-27</span>
+                    </div>
+                    <div class="version-item">
+                        <span class="version-label">更新内容</span>
+                        <span class="version-value">加入生成HTML全景图功能</span>
+                    </div>
+                </div>
+
+                <div class="download-buttons">
+                    <a href="https://pan.baidu.com/s/1cxuneM_4rwvtiwmasGoWnQ?pwd=u4fc" class="download-btn mac" target="_blank">
+                        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.53c.87-1.44 2.43-2.36 4.12-2.39 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.81-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M13 3.5c.73-.83 1.94-1.46 2.94-1.5.13 1.17-.34 2.35-1.04 3.19-.69.85-1.83 1.51-2.95 1.42-.15-1.15.41-2.35 1.05-3.11z"/></svg>
+                        macOS 下载
+                    </a>
+                    <a href="https://pan.baidu.com/s/1z99lGKandJ5PdF0sAjTgtg?pwd=y9nn" class="download-btn windows" target="_blank">
+                        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M3 12V6.75l6-1.32v6.48L3 12zm17-9v8.75l-10 .08V5.21L20 3zM3 13l6 .09v6.81l-6-1.15V13zm7 .18l10 .08V21l-10-1.76V13.18z"/></svg>
+                        Windows 下载
+                    </a>
+                </div>
+            </div>
+
+            <!-- HTML保障全景图 -->
+            <div class="tool-card">
+                <div class="tool-icon html">🌐</div>
+                <h2>HTML 保障全景图</h2>
+                <p class="description">保障全景视图解读工具</p>
+                
+                <div class="version-info">
+                    <div class="version-item">
+                        <span class="version-label">当前版本</span>
+                        <span class="version-value">v2.1.4</span>
+                    </div>
+                    <div class="version-item">
+                        <span class="version-label">更新日期</span>
+                        <span class="version-value">2026-07-24</span>
+                    </div>
+                    <div class="version-item">
+                        <span class="version-label">更新内容</span>
+                        <span class="version-value">增加横版PDF导出</span>
+                    </div>
+                </div>
+
+                <div class="download-buttons"> 
+                    <a href="https://pan.baidu.com/s/1OQrwQGROlQ7j1KnUSt5_Lg?pwd=dnu7" class="download-btn windows" target="_blank"> 
+                        下载
+                    </a>
+                </div>
+            </div>
+
+            <!-- CRM客户管理工具 -->
+            <div class="tool-card">
+                <div class="tool-icon crm">👥</div>
+                <h2>CRM 客户管理工具</h2>
+                <p class="description">客户关系管理平台，支持客户导入、跟进、数据分析</p>
+                
+                <div class="version-info">
+                    <div class="version-item">
+                        <span class="version-label">当前版本</span>
+                        <span class="version-value">v1.0.1</span>
+                    </div>
+                    <div class="version-item">
+                        <span class="version-label">更新日期</span>
+                        <span class="version-value">2026-06-21</span>
+                    </div>
+                    <div class="version-item">
+                        <span class="version-label">更新内容</span>
+                        <span class="version-value">-</span>
+                    </div>
+                </div>
+
+                <div class="download-buttons">
+                    <a href="https://pan.baidu.com/s/126xRDuAh8WrngP4oz6JfUg?pwd=msta" class="download-btn mac" target="_blank">
+                        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.53c.87-1.44 2.43-2.36 4.12-2.39 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.81-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M13 3.5c.73-.83 1.94-1.46 2.94-1.5.13 1.17-.34 2.35-1.04 3.19-.69.85-1.83 1.51-2.95 1.42-.15-1.15.41-2.35 1.05-3.11z"/></svg>
+                        macOS 下载
+                    </a>
+                    <a href="https://pan.baidu.com/s/1G0NBYG-CZupPeq6QZLVe9g?pwd=1mde" class="download-btn windows" target="_blank">
+                        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M3 12V6.75l6-1.32v6.48L3 12zm17-9v8.75l-10 .08V5.21L20 3zM3 13l6 .09v6.81l-6-1.15V13zm7 .18l10 .08V21l-10-1.76V13.18z"/></svg>
+                        Windows 下载
+                    </a>
+                </div>
+            </div>
+        </div>
+         
+    </div>
 </body>
 </html>
